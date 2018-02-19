@@ -1,6 +1,11 @@
-let vimdir = "~/.vim"
+" https://www.reddit.com/r/vim/comments/27evpc/crossplatform_vim_configuration_windows_and_linux/ci0cdup/
+" On Windows, also use '.vim' instead of 'vimfiles'; this makes
+" synchronization across (heterogeneous) systems easier.
+if has('win32')
+    set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+endif
 
-call plug#begin($vimdir . '/plugged')
+call plug#begin('$HOME/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'ap/vim-css-color'
   Plug 'bling/vim-airline'
@@ -46,9 +51,9 @@ set noeb vb t_vb=
 set tm=500
 
 " store backup, undo, and swap files in temp directory
-set directory=$vimdir . '/backup//'
-set backupdir=$vimdir . '/backup//'
-set undodir=$vimdir . '/undo//'
+set directory=$HOME/.vim/backup
+set backupdir=$HOME/.vim/backup
+set undodir=$HOME/.vim/undo
 
 set undofile
 set undolevels=1000
@@ -58,9 +63,11 @@ set undoreload=10000
 syntax on
 filetype plugin indent on
 
+set t_ut=
+set t_Co=256 " must be before the colorscheme
 set background=dark
-colorscheme anderson
-" colorscheme solarized
+"colorscheme anderson
+colorscheme solarized
 " let g:solarized_termcolors=256
 
 set encoding=utf-8
