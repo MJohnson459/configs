@@ -1,4 +1,6 @@
-call plug#begin('~/vimfiles/plugged')
+let vimdir = "~/.vim"
+
+call plug#begin($vimdir . '/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'ap/vim-css-color'
   Plug 'bling/vim-airline'
@@ -34,19 +36,21 @@ call plug#begin('~/vimfiles/plugged')
   Plug 'prabirshrestha/vim-lsp'
 call plug#end()
 
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
 
 " Stop beeping
 set noeb vb t_vb=
+set tm=500
 
 " store backup, undo, and swap files in temp directory
-set directory=$HOME/vimfiles/temp//
-set backupdir=$HOME/vimfiles/temp//
-set undodir=$HOME/vimfiles/temp//
+set directory=$vimdir . '/backup//'
+set backupdir=$vimdir . '/backup//'
+set undodir=$vimdir . '/undo//'
 
-" Persistent undo
 set undofile
-set undodir=$HOME/vimfiles/undo
-
 set undolevels=1000
 set undoreload=10000
 
@@ -54,17 +58,23 @@ set undoreload=10000
 syntax on
 filetype plugin indent on
 
-
 set background=dark
 colorscheme anderson
+" colorscheme solarized
+" let g:solarized_termcolors=256
 
-set number
-set relativenumber
 set encoding=utf-8
 set ff=unix
 
-" Show whitespace
+" Show whitespace characters
+set listchars=tab:▸\ ,trail:·,extends:>,precedes:<,nbsp:·
+if &termencoding ==# 'utf-8' || &encoding ==# 'utf-8'
+    set listchars=tab:⇥\ ,trail:␣,extends:⇉,precedes:⇇,nbsp:⚭
+    set fillchars=vert:╎,fold:·
+endif
 set list
+
+set wildmenu " Turn on the WiLd menu
 
 " Tab size
 set expandtab
@@ -75,11 +85,19 @@ set shiftwidth=2
 set tabstop=2
 set smarttab
 
-" Ignores for Ctrl P
-set wildignore+=**/node_modules
-set wildignore+=**/tmp/cache
-set wildignore+=*.pyc
-set wildignore+=*.swp
+
+" Search
+set number
+set relativenumber
+set ignorecase " Ignore case when searching
+set smartcase  " When searching try to be smart about cases
+set hlsearch   " Highlight search results
+set incsearch  " Makes search act like search in modern browsers
+set lazyredraw " Don't redraw while executing macros (good performance config)
+set magic      " For regular expressions turn magic on
+set showmatch  " Show matching brackets when text indicator is over them
+set mat=2      " How many tenths of a second to blink when matching brackets
+
 
 
 " Airline
@@ -90,15 +108,10 @@ let g:airline_powerline_fonts = 1
 " vim JSX (React)
 let g:jsx_ext_required = 0
 
-" Keybindings
-let mapleader = ","
 
-nmap <F8> :TagbarToggle<CR>
-nmap <leader>nn :NERDTreeToggle<CR>
-
-nmap <F4> :w<CR>:Dispatch<CR><CR>:cw<CR>
-
+""""""""""""""""
 " NERDCommenter
+""""""""""""""""
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 
@@ -113,6 +126,61 @@ let g:NERDCommentEmptyLines = 1
 
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
+
+
+""""""""""""""""""""""""""""""
+" => CTRL-P
+" """"""""""""""""""""""""""""""
+" let g:ctrlp_working_path_mode = 0
+"
+" let g:ctrlp_map = '<c-f>'
+" map <leader>j :CtrlP<cr>
+" map <c-b> :CtrlPBuffer<cr>
+"
+let g:ctrlp_max_height = 20
+let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee\|release'
+
+set wildignore+=**/node_modules
+set wildignore+=**/tmp/cache
+set wildignore+=*.pyc
+set wildignore+=*.swp
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc,*.swp
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,**/node_modules,**/tmp/cache
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Nerd Tree
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>nn :NERDTreeToggle<cr>
+map <leader>nb :NERDTreeFromBookmark<Space>
+map <leader>nf :NERDTreeFind<cr>
+
+""""""""""""""""""""
+" General Keybinding
+""""""""""""""""""""
+
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+cmap w!! w !sudo tee > /dev/null %
+
+nmap <F8> :TagbarToggle<CR>
+nmap <F4> :w<CR>:Dispatch<CR><CR>:cw<CR>
+
+
+"""""""""""""""""""""
+" Misc
+""""""""""""""""""""
+nnoremap <Leader><Space> :let @/=""<cr>
+
+let g:vim_markdown_folding_disabled = 1
+au BufReadPost *.launch set syntax=xml
+
+" User defined commands
+nmap <leader>um :!java -jar ~/.plantuml/plantuml.jar %<CR>
 
 """"""""""""""""""""""""
 " Vim LSP
@@ -130,3 +198,36 @@ if executable('rls')
         \ })
 endif
 
+if executable('docker-langserver')
+  au User lsp_setup call lsp#register_server({
+    \ 'name': 'docker-langserver',
+    \ 'cmd': {server_info->[&shell, &shellcmdflag, 'docker-langserver --stdio']},
+    \ 'whitelist': ['dockerfile']
+    \ })
+endif
+
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+
+
+
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+        \ })
+elseif executable('app')
+   au User lsp_setup call lsp#register_server({
+      \ 'name': 'cquery',
+      \ 'cmd': {server_info->['app']},
+      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+      \ 'initialization_options': { 'cacheDirectory': '/path/to/cquery/cache' },
+      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+      \ })
+endif
