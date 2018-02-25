@@ -1,8 +1,13 @@
-" Set a nicer font.
-set guifont=Hack\ 12
 " Hide the toolbar.
 set guioptions-=T
+colorscheme anderson
 " Disable beeping
 set vb t_vb=
 
-colorscheme anderson
+" Set a nicer font.
+if has('gui_win32')
+  set guifont=Hack:h12
+else
+  set guifont=Hack\ 12
+endif
+
