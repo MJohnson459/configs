@@ -39,6 +39,7 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'yuttie/comfortable-motion.vim'
   Plug 'prabirshrestha/async.vim'
   Plug 'prabirshrestha/vim-lsp'
+  Plug 'stephpy/vim-yaml'
 call plug#end()
 
 " With a map leader it's possible to do extra key combinations
@@ -64,11 +65,16 @@ syntax on
 filetype plugin indent on
 
 set t_ut=
-set t_Co=256 " must be before the colorscheme
 set background=dark
-"colorscheme anderson
-colorscheme solarized
-" let g:solarized_termcolors=256
+if has('nvim')
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  set termguicolors
+  colorscheme anderson
+else
+  set t_Co=256 " must be before the colorscheme
+  let g:solarized_termcolors=256
+  colorscheme solarized
+endif
 
 set encoding=utf-8
 set ff=unix
@@ -80,6 +86,10 @@ if &termencoding ==# 'utf-8' || &encoding ==# 'utf-8'
     set fillchars=vert:╎,fold:·
 endif
 set list
+
+" 80 char limit highlight
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%>80v.\+/
 
 set wildmenu " Turn on the WiLd menu
 
@@ -188,6 +198,12 @@ au BufReadPost *.launch set syntax=xml
 
 " User defined commands
 nmap <leader>um :!java -jar ~/.plantuml/plantuml.jar %<CR>
+nnoremap <silent> <F5> :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :nohl <Bar> :unlet _s <CR>
+nmap <leader>c :w !xclip -i -sel c
+
+
+" YCM
+let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
 """"""""""""""""""""""""
 " Vim LSP
@@ -238,3 +254,17 @@ elseif executable('app')
       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
       \ })
 endif
+
+
+" Clang Format
+let clang_format = "/usr/share/clang/clang-format-3.8/clang-format.py"
+exe 'map <C-K> :pyf '.clang_format.'<cr>'
+exe 'imap <C-K> <c-o>:pyf '.clang_format.'<cr>'
+
+" function! Formatonsave()
+"   if filereadable(clang_format)
+"     let l:formatdiff = 1
+"     exe 'pyf '.clang_format
+"   endif
+" endfunction
+" autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
