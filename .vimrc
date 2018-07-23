@@ -7,6 +7,7 @@ endif
 
 call plug#begin('$HOME/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
+  Plug 'aklt/plantuml-syntax'
   Plug 'ap/vim-css-color'
   Plug 'bling/vim-airline'
   Plug 'cespare/vim-toml'
@@ -20,12 +21,16 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'honza/vim-snippets'
   Plug 'jnurmine/zenburn'
   Plug 'majutsushi/tagbar'
+  Plug 'mileszs/ack.vim'
   Plug 'mxw/vim-jsx'
   Plug 'pangloss/vim-javascript'
+  Plug 'prabirshrestha/async.vim'
+  Plug 'prabirshrestha/vim-lsp'
   Plug 'scrooloose/nerdcommenter'
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'scrooloose/syntastic'
   Plug 'sirver/ultisnips'
+  Plug 'stephpy/vim-yaml'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'tmux-plugins/vim-tmux-focus-events'
   Plug 'tpope/vim-dispatch'
@@ -37,9 +42,6 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'vim-airline/vim-airline-themes'
   Plug 'xuyuanp/nerdtree-git-plugin'
   Plug 'yuttie/comfortable-motion.vim'
-  Plug 'prabirshrestha/async.vim'
-  Plug 'prabirshrestha/vim-lsp'
-  Plug 'stephpy/vim-yaml'
 call plug#end()
 
 " With a map leader it's possible to do extra key combinations
@@ -205,7 +207,15 @@ nmap <leader>c :w !xclip -i -sel c
 " YCM
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
-""""""""""""""""""""""""
+"""""""""""""""""""""""
+" Ack/Ag
+"""""""""""""""""""""""
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
+
+"""""""""""""""""""""""
 " Vim LSP
 """""""""""""""""""""""
 " Keybindings
@@ -239,21 +249,21 @@ endif
 
 
 
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-elseif executable('app')
-   au User lsp_setup call lsp#register_server({
-      \ 'name': 'cquery',
-      \ 'cmd': {server_info->['app']},
-      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-      \ 'initialization_options': { 'cacheDirectory': '/path/to/cquery/cache' },
-      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-      \ })
-endif
+" if executable('clangd')
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'clangd',
+"         \ 'cmd': {server_info->['clangd']},
+"         \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"         \ })
+" elseif executable('app')
+"    au User lsp_setup call lsp#register_server({
+"       \ 'name': 'cquery',
+"       \ 'cmd': {server_info->['app']},
+"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+"       \ 'initialization_options': { 'cacheDirectory': '/path/to/cquery/cache' },
+"       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"       \ })
+" endif
 
 
 " Clang Format
