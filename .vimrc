@@ -189,6 +189,16 @@ cmap w!! w !sudo tee > /dev/null %
 nmap <F8> :TagbarToggle<CR>
 nmap <F4> :w<CR>:Dispatch<CR><CR>:cw<CR>
 
+" Copy to clipboard
+vnoremap  <leader>y  "+y
+nnoremap  <leader>Y  "+yg_
+nnoremap  <leader>y  "+y
+
+" Paste from clipboard
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
 
 """""""""""""""""""""
 " Misc
@@ -214,6 +224,7 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
+nnoremap <leader>f :Ack<Space>
 
 """""""""""""""""""""""
 " Vim LSP
