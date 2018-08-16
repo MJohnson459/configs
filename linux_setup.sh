@@ -30,3 +30,7 @@ cp .ssh_config ~/.ssh/config
 
 # git
 cp .gitconfig ~/.gitconfig
+
+# rust
+curl https://sh.rustup.rs -sSf | sh -- -y
+source $HOME/.cargo/env
