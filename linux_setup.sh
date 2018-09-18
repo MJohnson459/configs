@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install fun
+sudo apt update
 sudo apt install -y \
   neovim \
   curl \
@@ -21,6 +22,8 @@ mkdir -p $HOME/.vim/backup $HOME/.vim/undo
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+vim +"PlugInstall --sync" +qa
+
 # tmux
 echo "source-file $(pwd)/.tmux.conf" > ~/.tmux.conf
 cp .tmuxline ~/.tmuxline
@@ -32,5 +35,5 @@ cp .ssh_config ~/.ssh/config
 cp .gitconfig ~/.gitconfig
 
 # rust
-curl https://sh.rustup.rs -sSf | sh -- -y
+curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
