@@ -37,3 +37,10 @@ cp .gitconfig ~/.gitconfig
 # rust
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
+
+# bash
+echo "source $(pwd)/.bash_aliases" > ~/.bash_aliases
+
+# todo
+mkdir ~/.todo
+touch ~/.todo/{todo.txt,done.txt}
