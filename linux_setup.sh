@@ -12,17 +12,17 @@ sudo apt install -y \
   python3-dev
 
 # vim
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 echo "source $(pwd)/.vimrc" > ~/.vimrc
 echo "source $(pwd)/.gvimrc" > ~/.gvimrc
 mkdir -p $HOME/.vim/backup $HOME/.vim/undo
+mkdir ~/.config/nvim/
+cp init.vim ~/.config/nvim/
 
 # neovim
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-vim +"PlugInstall --sync" +qa
+nvim +"PlugInstall --sync" +qa
 
 # tmux
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
