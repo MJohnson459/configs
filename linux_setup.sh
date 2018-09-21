@@ -25,6 +25,7 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 vim +"PlugInstall --sync" +qa
 
 # tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 echo "source-file $(pwd)/.tmux.conf" > ~/.tmux.conf
 cp .tmuxline ~/.tmuxline
 
