@@ -49,6 +49,8 @@ call plug#end()
 let mapleader = ","
 let g:mapleader = ","
 
+set mouse=a
+
 " Stop beeping
 set noeb vb t_vb=
 set tm=500
@@ -90,8 +92,8 @@ endif
 set list
 
 " 80 char limit highlight
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%>80v.\+/
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%>80v.\+/
 
 set wildmenu " Turn on the WiLd menu
 
@@ -289,3 +291,6 @@ exe 'imap <C-K> <c-o>:pyf '.clang_format.'<cr>'
 "   endif
 " endfunction
 " autocmd BufWritePre *.h,*.cc,*.cpp call Formatonsave()
+
+
+hi Normal guibg=NONE ctermbg=NONE
