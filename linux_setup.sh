@@ -43,6 +43,7 @@ source $HOME/.cargo/env
 
 # bash
 echo "source $CURDIR/.bash_aliases" > ~/.bash_aliases
+echo "source $CURDIR/.bashrc" > ~/.bashrc
 
 # todo
 mkdir ~/.todo
