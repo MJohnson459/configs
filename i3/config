@@ -211,8 +211,13 @@ assign [title="Spotify"] $music
 for_window [class="Spotify"] move to workspace $music
 
 
+
+# Executables
+
 exec --no-startup-id compton -b
 # exec --no-startup-id compton --config ~/.config/compton.conf -b
+
+exec --no-startup-id nm-applet
 
 # Look and Feel
 exec_always feh --bg-center ~/Pictures/Wallpapers/wallhaven-168642.png
