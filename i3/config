@@ -201,8 +201,6 @@ assign [class="Thunderbird"] $thunderbird
 ## Pidgin
 assign [class="^Pidgin$"] $pidgin
 for_window [window_role="buddy_list"] layout tabbed
-for_window [class="^Pidgin$" window_role="^buddy$"] resize shrink width 30 ppt; move left
-for_window [class="^Pidgin$" window_role="^conversation$"] resize grow width 0 px or 30 ppt; move left
 
 ## Spotify
 assign [class="Spotify"] $music
@@ -221,3 +219,8 @@ exec --no-startup-id nm-applet
 
 # Look and Feel
 exec_always feh --bg-center ~/Pictures/Wallpapers/wallhaven-168642.png
+
+
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
+bindsym XF86AudioMute exec amixer -q set Master toggle

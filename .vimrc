@@ -6,6 +6,7 @@ if has('win32')
 endif
 
 call plug#begin('$HOME/.vim/plugged')
+  Plug 'FelikZ/ctrlp-py-matcher'
   Plug 'airblade/vim-gitgutter'
   Plug 'aklt/plantuml-syntax'
   Plug 'ap/vim-css-color'
@@ -20,12 +21,14 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'godlygeek/tabular'
   Plug 'honza/vim-snippets'
   Plug 'jnurmine/zenburn'
+  Plug 'leafgarland/typescript-vim'
   Plug 'majutsushi/tagbar'
   Plug 'mileszs/ack.vim'
   Plug 'mxw/vim-jsx'
   Plug 'pangloss/vim-javascript'
   Plug 'prabirshrestha/async.vim'
   Plug 'prabirshrestha/vim-lsp'
+  Plug 'rust-lang/rust.vim'
   Plug 'scrooloose/nerdcommenter'
   Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
   Plug 'scrooloose/syntastic'
@@ -38,10 +41,12 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-vinegar'
   Plug 'valloric/youcompleteme'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'xuyuanp/nerdtree-git-plugin'
   Plug 'yuttie/comfortable-motion.vim'
+  Plug '~/.fzf'
 call plug#end()
 
 " With a map leader it's possible to do extra key combinations
@@ -67,6 +72,10 @@ set undoreload=10000
 " Syntax
 syntax on
 filetype plugin indent on
+set tw=100
+nmap <leader>lw :set wrap! linebreak!<CR>
+nmap <leader>tw :set tw=100<CR>
+nmap <leader>ntw :set tw=0<CR>
 
 set t_ut=
 set background=dark
@@ -159,19 +168,40 @@ let g:NERDTrimTrailingWhitespace = 1
 " map <c-b> :CtrlPBuffer<cr>
 "
 let g:ctrlp_max_height = 20
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee\|release'
+let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee\|release\|target\|_builds|_logs'
+
+" PyMatcher for CtrlP
+if !has('python')
+    echo 'In order to use pymatcher plugin, you need +python compiled vim'
+else
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+endif
 
 set wildignore+=**/node_modules
 set wildignore+=**/tmp/cache
 set wildignore+=*.pyc
 set wildignore+=*.swp
 
+" Set delay to prevent extra search
+let g:ctrlp_lazy_update = 200
+
+" Do not clear filenames cache, to improve CtrlP startup
+" You can manualy clear it by <F5>
+let g:ctrlp_clear_cache_on_exit = 0
+
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc,*.swp
 if has("win16") || has("win32")
     set wildignore+=.git\*,.hg\*,.svn\*
 else
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,**/node_modules,**/tmp/cache
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,**/node_modules,**/tmp/cache,**/_builds
+endif
+
+
+" If ag is available use it as filename list generator instead of 'find'
+if executable("ag")
+    set grepprg=ag\ --nogroup\ --nocolor
+    let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -216,8 +246,20 @@ nnoremap <silent> <F5> :let _s=@/ <Bar> :%s/\s\+$//e <Bar> :let @/=_s <Bar> :noh
 nmap <leader>c :w !xclip -i -sel c
 
 
+"""""""""""
 " YCM
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+"""""""""""""
+"let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+    project_base_dir = os.environ['VIRTUAL_ENV']
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+EOF
 
 """""""""""""""""""""""
 " Ack/Ag

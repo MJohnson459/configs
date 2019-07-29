@@ -13,6 +13,10 @@ sudo apt install -y \
   python-dev \
   python3-dev
 
+# fzf (needs to be before vim)
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+
 # vim
 echo "source $CURDIR/.vimrc" > ~/.vimrc
 echo "source $CURDIR/.gvimrc" > ~/.gvimrc
