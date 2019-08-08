@@ -52,13 +52,3 @@ echo "source $CURDIR/.bashrc" > ~/.bashrc
 # todo
 mkdir ~/.todo
 touch ~/.todo/{todo.txt,done.txt}
-
-# i3
-sudo apt install -y i3 i3status dmenu xbacklight feh conky compton cmatrix
-mkdir -p ~/.config/i3
-ln -s $CURDIR/i3/config ~/.config/i3/config
-
-# alacritty
-sudo apt install -y cmake libfreetype6-dev libfontconfig1-dev xclip
-mkdir -p ~/.config/alacritty
-ln -s $CURDIR/alacritty/alacritty.yml ~/.config/alacritty/alacritty/yml
