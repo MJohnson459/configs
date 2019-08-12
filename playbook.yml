@@ -4,6 +4,8 @@
     - name: Install basic packages (neovim, ag)
       apt:
         name: "{{ packages }}"
+        update_cache: yes
+      become: yes
       vars:
         packages:
           - neovim
@@ -14,8 +16,7 @@
           - cmake
           - python-dev
           - python3-dev
-          - fzf
-      update_cache: yes
+          # - fzf
 
 
     - name: Install vim plug
@@ -41,11 +42,12 @@
 
     - name: Create required directories
       file:
-        path: "{{ paths }}"
+        path: "~/.vim/{{ paths }}"
+        state: directory
       vars:
         paths:
-          - ~/.vim/backup/
-          - ~/.vim/undo/
+          - backup/
+          - undo/
       tags:
         - vim
 
@@ -57,7 +59,7 @@
         - vim
 
     - name: Install nvim plugins
-      command: nvim +"PlugInstall --sync" +qa
+      shell: nvim +'PlugInstall --sync' +'PlugUpdate' +qa --headless
       tags:
         - vim
 
@@ -65,7 +67,10 @@
     - name: Copy ssh_config
       copy:
         src: files/.ssh_config
-        dest: ~/.ssh/config/
+        dest: ~/.ssh/config
+      tags:
+        - ssh
+
 
     - name: Copy gitconfig
       copy:
