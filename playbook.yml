@@ -134,3 +134,46 @@
           alias t="todo.sh"
           complete -F _todo t
 
+          alias o="xdg-open"
+      tags:
+        - bash
+
+    - name: Download pyenv installer
+      get_url:
+        url: https://pyenv.run
+        dest: ~/.pyenv.run
+        mode: 0755
+      tags:
+        - python
+
+    - name: Run pyenv installer
+      shell: ~/.pyenv.run
+      tags:
+        - python
+      args:
+        creates: ~/.pyenv
+
+    - name: Remove pyenv installer
+      file:
+        path: ~/.pyenv.run
+        state: absent
+      tags:
+        - python
+
+    - name: pyenv in bashrc
+      blockinfile:
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: PYTHON"
+        path: ~/.bashrc
+        block: |
+          export PATH="/home/michael/.pyenv/bin:$PATH"
+          eval "$(pyenv init -)"
+          eval "$(pyenv virtualenv-init -)"
+      tags:
+        - python
+
+
+# Fix suspend
+# https://askubuntu.com/questions/1115572/ubuntu-18-04-dell-xps15-9570-impossible-to-reliably-suspend-hibernate
+# /etc/default/grub - GRUB_CMDLINE_LINUX="nouveau.blacklist=1 acpi_osi=! acpi_osi=\"Windows 2015\" acpi_backlight=vendor mem_sleep_default=deep"
+# sudo update-grub
+
