@@ -12,11 +12,7 @@
           - curl
           - fonts-hack-ttf
           - tmux
-          - silversearcher-ag
-          - cmake
-          - python-dev
           - python3-dev
-          # - fzf
 
 
     - name: Install vim plug
@@ -109,17 +105,6 @@
       shell: curl https://sh.rustup.rs -sSf | sh -s -- -yyy
       args:
         creates: ~/.cargo/bin/cargo
-
-
-    - name: Set up todo
-      copy:
-        content: ""
-        dest: "~/.todo/{{ files }}"
-        force: no
-      vars:
-        files:
-          - todo.txt
-          - done.txt
 
 
     - name: Set up .bashrc
