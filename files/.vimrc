@@ -42,7 +42,7 @@ call plug#begin('$HOME/.vim/plugged')
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-vinegar'
-  Plug 'valloric/youcompleteme'
+"   Plug 'valloric/youcompleteme'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'xuyuanp/nerdtree-git-plugin'
   Plug 'yuttie/comfortable-motion.vim'

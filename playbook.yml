@@ -77,6 +77,11 @@
         src: files/.gitconfig
         dest: ~/.gitconfig
 
+    - name: Copy global gitignore
+      copy:
+        src: files/.gitignore_global
+        dest: ~/.gitignore_global
+
 
     - name: Install tmux package manager (TPM)
       git:
@@ -135,6 +140,10 @@
           complete -F _todo t
 
           alias o="xdg-open"
+
+          # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+          HISTSIZE=10000
+          HISTFILESIZE=20000
       tags:
         - bash
 
@@ -145,13 +154,15 @@
         mode: 0755
       tags:
         - python
+        - pyenv
 
     - name: Run pyenv installer
       shell: ~/.pyenv.run
-      tags:
-        - python
       args:
         creates: ~/.pyenv
+      tags:
+        - python
+        - pyenv
 
     - name: Remove pyenv installer
       file:
@@ -159,8 +170,52 @@
         state: absent
       tags:
         - python
+        - pyenv
 
-    - name: pyenv in bashrc
+    - name: Download poetry installer
+      get_url:
+        url: https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py
+        dest: ~/.get-poetry.py
+        mode: 0755
+      tags:
+        - python
+        - poetry
+
+    - name: Run poetry installer
+      shell: ~/.get-poetry.py
+      args:
+        creates: ~/.poetry
+      tags:
+        - python
+        - poetry
+
+    - name: Remove poetry installer
+      file:
+        path: ~/.get-poetry.py
+        state: absent
+      tags:
+        - python
+        - poetry
+
+    - name: Register poetry bash completions
+      shell: poetry completions bash
+      register: poetry_completions
+      tags:
+        - python
+        - poetry
+        - bash
+
+    - name: Install poetry bash completions
+      become: true
+      copy:
+        content: "{{ poetry_completions }}"
+        dest: /etc/bash_completion.d/poetry.bash-completion
+      tags:
+        - python
+        - poetry
+        - bash
+
+    - name: Python in bashrc
       blockinfile:
         marker: "# {mark} ANSIBLE MANAGED BLOCK: PYTHON"
         path: ~/.bashrc
@@ -170,10 +225,19 @@
           eval "$(pyenv virtualenv-init -)"
       tags:
         - python
+        - pyenv
+        - bash
+
+    - name: nvm
+      shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+      tags:
+        - js
 
 
 # Fix suspend
 # https://askubuntu.com/questions/1115572/ubuntu-18-04-dell-xps15-9570-impossible-to-reliably-suspend-hibernate
 # /etc/default/grub - GRUB_CMDLINE_LINUX="nouveau.blacklist=1 acpi_osi=! acpi_osi=\"Windows 2015\" acpi_backlight=vendor mem_sleep_default=deep"
 # sudo update-grub
-
