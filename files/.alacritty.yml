@@ -1,0 +1,21 @@
+window:
+  opacity: 1.0
+
+font:
+  normal:
+    family: Hack
+    style: Regular
+
+shell:
+  program: /bin/zsh
+  args:
+    - -l
+    - -c
+    - "tmux attach || tmux"
+
+shell:
+  program: /usr/bin/tmux
+  args:
+    - attach
+
+
